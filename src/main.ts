@@ -2,11 +2,6 @@ import "shikwasa/dist/style.css";
 import "./style.css";
 import { Player, Chapter } from "shikwasa";
 
-// document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
-//   <div>
-//     ff
-//   </div>
-// `;
 const EPISODE_NAME: string = "008「学校について！②」";
 
 interface Chapter {
@@ -21,15 +16,6 @@ function srtTimeToSeconds(time: string): number {
   return parseInt(hours) * 3600 + parseInt(minutes) * 60 + seconds + ms / 1000;
 }
 
-// function parseSRT(data: string): Subtitle[] {
-//   const subtitleBlocks = data.trim().split("\n\n");
-//   return subtitleBlocks.map((block) => {
-//     const lines = block.split("\n");
-//     const [index, time, ...text] = lines;
-//     const [start, end] = time.split(" --> ");
-//     return { index: parseInt(index), start, end, text };
-//   });
-// }
 function parseSRT(data: string): Chapter[] {
   const subtitleBlocks = data.trim().split("\n\n");
   return subtitleBlocks.map((block) => {
@@ -55,12 +41,12 @@ fetch(`${EPISODE_NAME}.srt`)
       container: () => document.getElementById("player-container"),
       audio: {
         title: EPISODE_NAME,
-        artist: "Teppei",
+        artist: "Unknown",
         // cover: "image.png",
         src: `${EPISODE_NAME}.mp3`,
         chapters: parsedSrt,
       },
     });
     player.el.setAttribute("data-show-chapter", true);
-    console.log(player.options);
+    player.el.setAttribute("data-extra", true);
   });
