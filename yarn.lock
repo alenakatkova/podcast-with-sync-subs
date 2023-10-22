@@ -176,6 +176,11 @@ rollup@^3.27.1:
   optionalDependencies:
     fsevents "~2.3.2"
 
+shikwasa@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/shikwasa/-/shikwasa-2.2.1.tgz#9b5b11792befdeef6d1de0aad85d9bcfbf66b708"
+  integrity sha512-+vfp/krbonBDoyyETd5a/NAMobRfmAKUQQ6pWak0nGuY2VxzAiu6XXMFPHbi0DUgfZe8YAV5naZgWElV+icS/Q==
+
 source-map-js@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/source-map-js/-/source-map-js-1.0.2.tgz#adbc361d9c62df380125e7f161f71c826f1e490c"
