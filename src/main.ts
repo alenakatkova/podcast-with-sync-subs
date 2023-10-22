@@ -62,5 +62,5 @@ fetch(`${EPISODE_NAME}.srt`)
       },
     });
     player.el.setAttribute("data-show-chapter", true);
-    console.log(player.el.dataset);
+    console.log(player.options);
   });
