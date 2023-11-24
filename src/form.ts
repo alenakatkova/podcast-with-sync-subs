@@ -1,3 +1,5 @@
+import { ChapterAttributes } from "./types/ChapterAttributes.ts";
+
 const form = document.getElementById("files-form");
 const submitBtn = form?.querySelector('button[type="submit"]');
 const audioInput = form?.querySelector(
@@ -18,14 +20,30 @@ function handleFileUpload(file: File) {
   reader.readAsDataURL(file);
 }
 
-function onSubmit(evt: Event) {
-  evt.preventDefault();
-  const file = audioInput?.files?.[0];
-  if (!file) {
-    alert("Please select an audio file.");
-    return;
-  }
-  handleFileUpload(file);
-}
+// function onSubmit(evt: Event) {
+//   evt.preventDefault();
+//   const file = audioInput?.files?.[0];
+//   if (!file) {
+//     alert("Please select an audio file.");
+//     return;
+//   }
+//   handleFileUpload(file);
+// }
 
-submitBtn?.addEventListener("click", onSubmit);
+//submitBtn?.addEventListener("click", onSubmit);
+
+export function initializeForm(
+  onSubmitCallback: (audioUrl: string, chapters: ChapterAttributes[]) => void
+) {
+  submitBtn?.addEventListener("click", (evt) => {
+    evt.preventDefault();
+    const file = audioInput?.files?.[0];
+    if (!file) {
+      alert("Please select an audio file.");
+      return;
+    }
+    handleFileUpload(file);
+    const audioUrl = URL.createObjectURL(file);
+    onSubmitCallback(audioUrl, []);
+  });
+}
