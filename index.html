@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -7,7 +7,16 @@
     <title>Vite + TS</title>
   </head>
   <body>
+    <form action="" id="files-form" enctype="multipart/form-data">
+      <label for="audio-input">Add audio file</label>
+      <input type="file" name="audio" id="audio-input" accept="audio/*"/>
+      <label for="subtitle-input">Add subtitle file</label>
+      <input type="file" name="subtitle" id="subtitle-input" />
+      <button type="submit">Submit</button>
+    </form>
+    <audio id="audioPlayer" controls></audio>
     <main id="player-container"></main>
+    <script type="module" src="/src/form.ts"></script>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
