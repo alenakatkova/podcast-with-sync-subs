@@ -26,7 +26,7 @@ function parseSRT(data: string): ChapterAttributes[] {
   });
 }
 
-function readFile(file: Blob): Promise<ChapterAttributes[]> {
+function readSubtitlesFile(file: Blob): Promise<ChapterAttributes[]> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
 
@@ -52,15 +52,19 @@ function readFile(file: Blob): Promise<ChapterAttributes[]> {
   });
 }
 
-function tempOnSubmit(audioBlob: Blob, subtitlesBlob: Blob, fileName: string) {
+function submitFileUploadForm(
+  audioBlob: Blob,
+  subtitlesBlob: Blob,
+  fileName: string
+) {
   console.log(audioBlob);
 
   const audioUrl = URL.createObjectURL(audioBlob);
 
-  readFile(subtitlesBlob)
-    .then((parsedData) => {
+  readSubtitlesFile(subtitlesBlob)
+    .then((subtitles) => {
       if (playerElement) {
-        showPlayer(playerElement, audioUrl, parsedData, fileName);
+        showPlayer(playerElement, audioUrl, subtitles, fileName);
       } else {
         console.error("Player element not found");
       }
@@ -70,4 +74,4 @@ function tempOnSubmit(audioBlob: Blob, subtitlesBlob: Blob, fileName: string) {
     });
 }
 
-initializeForm(tempOnSubmit);
+initializeForm(submitFileUploadForm);
