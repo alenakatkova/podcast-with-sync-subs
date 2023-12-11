@@ -1,14 +1,9 @@
-import "shikwasa/dist/style.css";
-import "./style.css";
-import { Player, Chapter } from "shikwasa";
+import { showPlayer, hidePlayer } from "./player";
+import { initializeForm } from "./form.ts";
+import { ChapterAttributes } from "./types/ChapterAttributes.ts";
 
-const EPISODE_NAME: string = "008「学校について！②」";
-
-interface Chapter {
-  title: string;
-  startTime: number;
-  endTime: number;
-}
+const playerElement = document.getElementById("player-container");
+if (playerElement) hidePlayer(playerElement);
 
 function srtTimeToSeconds(time: string): number {
   const [hours, minutes, rest] = time.split(":");
@@ -16,7 +11,7 @@ function srtTimeToSeconds(time: string): number {
   return parseInt(hours) * 3600 + parseInt(minutes) * 60 + seconds + ms / 1000;
 }
 
-function parseSRT(data: string): Chapter[] {
+function parseSRT(data: string): ChapterAttributes[] {
   const subtitleBlocks = data.trim().split("\n\n");
   return subtitleBlocks.map((block) => {
     const lines = block.split("\n");
@@ -31,22 +26,52 @@ function parseSRT(data: string): Chapter[] {
   });
 }
 
-Player.use(Chapter);
-fetch(`${EPISODE_NAME}.srt`)
-  .then((response) => response.text())
-  .then((fileContent) => parseSRT(fileContent))
-  .then((parsedSrt) => {
-    // @ts-ignore
-    const player = new Player({
-      container: () => document.getElementById("player-container"),
-      audio: {
-        title: EPISODE_NAME,
-        artist: "Unknown",
-        // cover: "image.png",
-        src: `${EPISODE_NAME}.mp3`,
-        chapters: parsedSrt,
-      },
-    });
-    player.el.setAttribute("data-show-chapter", true);
-    player.el.setAttribute("data-extra", true);
+function readSubtitlesFile(file: Blob): Promise<ChapterAttributes[]> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+      if (typeof e.target?.result === "string") {
+        const text = e.target.result;
+        try {
+          const parsedData = parseSRT(text);
+          resolve(parsedData);
+        } catch (error) {
+          reject(error);
+        }
+      } else {
+        reject(new Error("File read did not return a string."));
+      }
+    };
+
+    reader.onerror = function () {
+      reject(reader.error);
+    };
+
+    reader.readAsText(file);
   });
+}
+
+function submitFileUploadForm(
+  audioBlob: Blob,
+  subtitlesBlob: Blob,
+  fileName: string
+) {
+  console.log(audioBlob);
+
+  const audioUrl = URL.createObjectURL(audioBlob);
+
+  readSubtitlesFile(subtitlesBlob)
+    .then((subtitles) => {
+      if (playerElement) {
+        showPlayer(playerElement, audioUrl, subtitles, fileName);
+      } else {
+        console.error("Player element not found");
+      }
+    })
+    .catch((error) => {
+      console.error("Error reading file:", error);
+    });
+}
+
+initializeForm(submitFileUploadForm);
