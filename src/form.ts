@@ -5,7 +5,9 @@ const submitBtn = form?.querySelector('button[type="submit"]');
 const audioInput = form?.querySelector(
   "input[name='audio']"
 ) as HTMLInputElement | null;
-
+const subtitlesInput = form?.querySelector(
+  "input[name='subtitle']"
+) as HTMLInputElement | null;
 // function handleFileUpload(file: File) {
 //   const reader = new FileReader();
 //   reader.onload = () => {
@@ -34,21 +36,26 @@ const audioInput = form?.querySelector(
 
 export function initializeForm(
   onSubmitCallback: (
-    audioUrl: string,
-    chapters: ChapterAttributes[],
+    audioBlob: Blob,
+    subtitlesBlob: Blob,
     fileName: string
   ) => void
 ) {
   submitBtn?.addEventListener("click", (evt) => {
     evt.preventDefault();
-    const file = audioInput?.files?.[0];
-    if (!file) {
+    const audioFile = audioInput?.files?.[0];
+    if (!audioFile) {
       alert("Please select an audio file.");
       return;
     }
+
+    const subtitlesFile = subtitlesInput?.files?.[0];
+    if (!subtitlesFile) {
+      alert("Please select a subtitles file.");
+      return;
+    }
     // handleFileUpload(file);
-    const audioUrl = URL.createObjectURL(file);
-    console.log(file.name);
-    onSubmitCallback(audioUrl, [], file.name);
+
+    onSubmitCallback(audioFile, subtitlesFile, audioFile.name);
   });
 }
