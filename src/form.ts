@@ -6,19 +6,19 @@ const audioInput = form?.querySelector(
   "input[name='audio']"
 ) as HTMLInputElement | null;
 
-function handleFileUpload(file: File) {
-  const reader = new FileReader();
-  reader.onload = () => {
-    const audioPlayer = document.querySelector(
-      "audio[id='audioPlayer']"
-    ) as HTMLAudioElement | null;
-    if (audioPlayer) {
-      audioPlayer.src = reader.result as string;
-      audioPlayer.load();
-    }
-  };
-  reader.readAsDataURL(file);
-}
+// function handleFileUpload(file: File) {
+//   const reader = new FileReader();
+//   reader.onload = () => {
+//     const audioPlayer = document.querySelector(
+//       "audio[id='audioPlayer']"
+//     ) as HTMLAudioElement | null;
+//     if (audioPlayer) {
+//       audioPlayer.src = reader.result as string;
+//       audioPlayer.load();
+//     }
+//   };
+//   reader.readAsDataURL(file);
+// }
 
 // function onSubmit(evt: Event) {
 //   evt.preventDefault();
@@ -33,7 +33,11 @@ function handleFileUpload(file: File) {
 //submitBtn?.addEventListener("click", onSubmit);
 
 export function initializeForm(
-  onSubmitCallback: (audioUrl: string, chapters: ChapterAttributes[]) => void
+  onSubmitCallback: (
+    audioUrl: string,
+    chapters: ChapterAttributes[],
+    fileName: string
+  ) => void
 ) {
   submitBtn?.addEventListener("click", (evt) => {
     evt.preventDefault();
@@ -42,8 +46,9 @@ export function initializeForm(
       alert("Please select an audio file.");
       return;
     }
-    handleFileUpload(file);
+    // handleFileUpload(file);
     const audioUrl = URL.createObjectURL(file);
-    onSubmitCallback(audioUrl, []);
+    console.log(file.name);
+    onSubmitCallback(audioUrl, [], file.name);
   });
 }

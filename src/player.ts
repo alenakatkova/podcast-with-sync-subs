@@ -3,8 +3,6 @@ import "./style.css";
 import { Chapter, Player } from "shikwasa";
 import { ChapterAttributes } from "./types/ChapterAttributes";
 
-const EPISODE_NAME: string = "008「学校について！②」";
-
 function srtTimeToSeconds(time: string): number {
   const [hours, minutes, rest] = time.split(":");
   const [seconds, ms] = rest.split(",").map(Number);
@@ -28,34 +26,31 @@ function parseSRT(data: string): ChapterAttributes[] {
 
 Player.use(Chapter);
 
-function initializePlayer(audioSrc: string, subtitles: ChapterAttributes[]) {
-  fetch(`${EPISODE_NAME}.srt`)
-    .then((response) => response.text())
-    .then((fileContent) => parseSRT(fileContent))
-    .then((parsedSrt) => {
-      // @ts-ignore
-      const player = new Player({
-        container: () => document.getElementById("player-container"),
-        audio: {
-          title: EPISODE_NAME,
-          artist: "Unknown",
-          // cover: "image.png",
-          src: `${EPISODE_NAME}.mp3`,
-          chapters: parsedSrt,
-        },
-      });
-      player.el.setAttribute("data-show-chapter", true);
-      player.el.setAttribute("data-extra", true);
-    });
+function initializePlayer(
+  audioSrc: string,
+  subtitles: ChapterAttributes[],
+  fileName: string
+) {
+  const player = new Player({
+    container: () => document.getElementById("player-container"),
+    audio: {
+      title: fileName,
+      src: audioSrc,
+      chapters: [],
+    },
+  });
+  player.el.setAttribute("data-show-chapter", true);
+  player.el.setAttribute("data-extra", true);
 }
 export function showPlayer(
   playerElement: HTMLElement,
   audioSrc: string,
-  subtitles: ChapterAttributes[]
+  subtitles: ChapterAttributes[],
+  fileName: string
 ) {
   playerElement.style.display = "block";
 
-  initializePlayer(audioSrc, subtitles);
+  initializePlayer(audioSrc, subtitles, fileName);
 }
 
 export function hidePlayer(playerElement: HTMLElement) {

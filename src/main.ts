@@ -5,12 +5,13 @@ import { ChapterAttributes } from "./types/ChapterAttributes.ts";
 const playerElement = document.getElementById("player-container");
 if (playerElement) hidePlayer(playerElement);
 
-setTimeout(() => {
-  showPlayer(playerElement, "", []);
-}, 3000);
-
-function tempOnSubmit(str: string, chapters: ChapterAttributes[]) {
+function tempOnSubmit(
+  str: string,
+  chapters: ChapterAttributes[],
+  fileName: string
+) {
   console.log(str);
+  showPlayer(playerElement, str, [], fileName);
 }
 
 initializeForm(tempOnSubmit);
