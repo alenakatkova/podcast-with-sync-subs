@@ -2,6 +2,9 @@ import { showPlayer, hidePlayer } from "./player";
 import { initializeForm } from "./form.ts";
 import { ChapterAttributes } from "./types/ChapterAttributes.ts";
 
+const playerElement = document.getElementById("player-container");
+if (playerElement) hidePlayer(playerElement);
+
 function srtTimeToSeconds(time: string): number {
   const [hours, minutes, rest] = time.split(":");
   const [seconds, ms] = rest.split(",").map(Number);
@@ -23,20 +26,21 @@ function parseSRT(data: string): ChapterAttributes[] {
   });
 }
 
-const playerElement = document.getElementById("player-container");
-if (playerElement) hidePlayer(playerElement);
-
-function readFile(file) {
+function readFile(file: Blob): Promise<ChapterAttributes[]> {
   return new Promise((resolve, reject) => {
-    var reader = new FileReader();
+    const reader = new FileReader();
 
     reader.onload = function (e) {
-      var text = e.target.result;
-      try {
-        var parsedData = parseSRT(text); // Assuming customParse is your parsing function
-        resolve(parsedData);
-      } catch (error) {
-        reject(error);
+      if (typeof e.target?.result === "string") {
+        const text = e.target.result;
+        try {
+          const parsedData = parseSRT(text);
+          resolve(parsedData);
+        } catch (error) {
+          reject(error);
+        }
+      } else {
+        reject(new Error("File read did not return a string."));
       }
     };
 
@@ -55,8 +59,11 @@ function tempOnSubmit(audioBlob: Blob, subtitlesBlob: Blob, fileName: string) {
 
   readFile(subtitlesBlob)
     .then((parsedData) => {
-      // Call another function with parsedData
-      showPlayer(playerElement, audioUrl, parsedData, fileName);
+      if (playerElement) {
+        showPlayer(playerElement, audioUrl, parsedData, fileName);
+      } else {
+        console.error("Player element not found");
+      }
     })
     .catch((error) => {
       console.error("Error reading file:", error);
